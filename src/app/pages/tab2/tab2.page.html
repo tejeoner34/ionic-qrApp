@@ -1,0 +1,20 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>
+      Registers
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+    <ion-list>
+        <ion-item *ngFor="let register of localData.savedRegisters">
+            <ion-icon slot="start" [name]="register.icon" color="primary"></ion-icon>
+            <ion-label>
+                <h3>{{register.text}}</h3>
+                <p>{{register.date | date: 'medium'}}</p>
+            </ion-label>
+        </ion-item>
+    </ion-list>
+
+</ion-content>
