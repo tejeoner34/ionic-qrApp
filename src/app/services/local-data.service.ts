@@ -5,6 +5,7 @@ import { Storage } from '@ionic/storage-angular';
 import { NavController, Platform } from '@ionic/angular';
 import { InAppBrowser } from '@awesome-cordova-plugins/in-app-browser/ngx';
 import { LaunchNavigator, LaunchNavigatorOptions } from '@awesome-cordova-plugins/launch-navigator/ngx';
+import { Geolocation } from '@awesome-cordova-plugins/geolocation/ngx';
 
 
 @Injectable({
@@ -20,6 +21,7 @@ export class LocalDataService {
         private navController: NavController,
         private appBrowser: InAppBrowser,
         private launchNavigator: LaunchNavigator,
+        private geolocation: Geolocation,
         private platform: Platform
         ) { 
         this.init()
@@ -58,12 +60,19 @@ export class LocalDataService {
 
         switch (register.type){
             case 'http':
-                this.onOpenBrowser(register.text)
+                this.onOpenBrowser(register.text);
+                break;
+            case 'geo':
+                this.onOpenMap(register.text);
+                break;
+            default:
+                return 'Error'
         }
     }
 
     onOpenBrowser(url){
 
+        console.log(this.platform.platforms())
         if(this.platform.is('ios') || this.platform.is('android')){
             const browser = this.appBrowser.create(url);
             browser.show();
@@ -75,11 +84,33 @@ export class LocalDataService {
     }
 
     onOpenMap(url){
-        // if (this.platform.is('ios')) {
-        //     window.open('maps://?q=' + offer.position.lat + ',' + offer.position.lng, '_system');
-        //   }
-        // if (this.platform.is('android')) {
-        //     window.open('geo://' + offer.position.lat + ',' + offer.position.lng + '?q=' + offer.position.lat + ',' + offer.position.lng + '(' + offer.ag_name + ')', '_system');
-        //   }
+
+        console.log(this.platform.platforms())
+
+        let geo = url;
+
+        geo = geo.slice(4).split('?')[0].split(',');
+
+        let currentLat = '';
+        let currentLon = '';
+        let destinationLan = geo[0];
+        let destinationLon = geo[1];
+
+        
+
+        if(this.platform.is('capacitor') || this.platform.is('cordova')){
+            window.open(`geo:${destinationLan},${destinationLon}?q=${destinationLan},${destinationLon}`, '_system')
+        }else{
+            this.geolocation.getCurrentPosition().then((resp) => {
+                currentLat = resp.coords.latitude.toString();
+                currentLon = resp.coords.longitude.toString();
+                window.open(`https://www.google.com/maps/dir/?api=1&travelmode=driving&layer=traffic&origin=${currentLat},${currentLon}&destination=${destinationLan},${destinationLon}`)
+            }).catch((error) => {
+                 console.log('Error getting location', error);
+               })
+        }
+
+
+        
     }
 }

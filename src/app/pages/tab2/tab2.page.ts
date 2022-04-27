@@ -10,4 +10,8 @@ export class Tab2Page {
 
   constructor(public localData: LocalDataService) {}
 
+  onDoAction(register){
+      this.localData.executeAction(register);
+  }
+
 }

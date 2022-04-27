@@ -19,7 +19,7 @@ export class Tab1Page {
             }
            }).catch(err => {
                console.log('Error', err);
-               this.localData.saveRegiser('QRcode', 'https://www.google.com/');
+               this.localData.saveRegiser('QRcode', 'geo:40.90715470124741,-74.621175675?q=40.90715470124741,-74.621175675');
 
            });
     }
