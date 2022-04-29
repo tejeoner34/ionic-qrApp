@@ -98,7 +98,7 @@ export class LocalDataService {
 
         
 
-        if(this.platform.is('capacitor') || this.platform.is('cordova')){
+        if(this.platform.is('ios') || this.platform.is('android')){
             window.open(`geo:${destinationLan},${destinationLon}?q=${destinationLan},${destinationLon}`, '_system')
         }else{
             this.geolocation.getCurrentPosition().then((resp) => {
